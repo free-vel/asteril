@@ -11,6 +11,12 @@ require_once('./db/db.php');
 const ASTERIL_API_ID = 1;
 const ASTERIL_ORDERS_TYPE = 'Asteril/Orders';
 
+$token = file_get_contents('token.inc');
+$headers = getallheaders();
+if(!isset($headers['token']) || $headers['token'] !== $token){
+    die('Wrong token');
+}
+
 $db = new Db();
 
 $asterilRepository = new AsterilRepository($db);
