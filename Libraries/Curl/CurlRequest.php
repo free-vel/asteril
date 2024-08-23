@@ -62,12 +62,12 @@ class CurlRequest
 
         $res = array();
 
-        foreach($nodes as $i => $url)
+        foreach($nodes as $i => $node)
         {
-            $res[$url] = curl_multi_getcontent($curl_array[$i]);
+            $res[$node['url']] = curl_multi_getcontent($curl_array[$i]);
         }
 
-        foreach($nodes as $i => $url){
+        foreach($nodes as $i => $node){
             curl_multi_remove_handle($mh, $curl_array[$i]);
         }
 
