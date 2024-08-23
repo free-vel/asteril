@@ -7,6 +7,7 @@ class Asteril
 {
     private array $apiParams;
     const PAGE_LIMIT = 10;
+    const DATE_IN_PAST = "2021-08-10";
     private CurlRequest $curlRequest;
 
     public function __construct($apiParams)
@@ -28,6 +29,7 @@ class Asteril
     {
         if($page) $params['page'] = $page;
         $params['limit'] = self::PAGE_LIMIT;
+        $params = $this->prepareApiParams($params);
 
         $curlOptUrl = 'https://'.$this->apiParams['subdomain'].'.asteril.com/'.$this->apiParams['apiGetOrdersUrl'].'?api_key='.$this->apiParams['apiKey'];
         $curlOptUrl .= '&'.http_build_query($params);
@@ -60,6 +62,30 @@ class Asteril
         }
 
         return $orders;
+    }
+
+    /**
+     * @param $params
+     * @return array
+     */
+    private function prepareApiParams($params): array
+    {
+        foreach($params as $key => $param){
+            switch($key){
+                case "createdDateBefore":
+                    $params['createdDate'] = self::DATE_IN_PAST.":".date('Y-m-d', strtotime(' - '.$param.' days'));
+                    unset($params['createdDateBefore']);
+                    break;
+                case "historyUpdateDateBefore":
+                    $params['historyUpdateDate'] = self::DATE_IN_PAST.":".date('Y-m-d', strtotime(' - '.$param.' days'));
+                    unset($params['historyUpdateDateBefore']);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return $params;
     }
 
     /**
